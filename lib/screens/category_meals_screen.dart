@@ -59,7 +59,6 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
       ),
       body: Column(
         children: [
-          // SEARCH BAR
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TextField(
