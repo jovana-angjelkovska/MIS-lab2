@@ -21,35 +21,33 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
   @override
   void initState() {
     super.initState();
-    _load();
+    _loadMeals();
   }
 
-  Future<void> _load() async {
+  Future<void> _loadMeals() async {
     setState(() => _loading = true);
+
     try {
       final meals = await ApiService.fetchMealsByCategory(widget.category);
       setState(() {
         _meals = meals;
-        _filtered = meals;
+        _filtered = meals; 
       });
     } catch (e) {
-      // handle
+      print("Error: $e");
     } finally {
       setState(() => _loading = false);
     }
   }
 
-  Future<void> _onSearch(String q) async {
-    if (q.trim().isEmpty) {
-      setState(() => _filtered = _meals);
-      return;
-    }
-    // use global search and then filter by category client-side
-    final results = await ApiService.searchMeals(q);
+  void _onSearch(String query) {
+    query = query.toLowerCase();
+
     setState(() {
-      _filtered = results.where((m) => m.strCategory == null || m.strCategory == widget.category ? true : true).toList();
-      // Note: filter.php returns only basic info; search results contain category info.
-      // For a stricter UX: results.where((m) => m.strCategory == widget.category)
+      _filtered = _meals.where((meal) {
+        final name = meal.strMeal.toLowerCase();
+        return name.contains(query); 
+      }).toList();
     });
   }
 
@@ -66,12 +64,14 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
             child: TextField(
               controller: _searchController,
               decoration: const InputDecoration(
-                labelText: 'Пребарување јадења во категоријата',
+                labelText: 'Search meals / Пребарувај јадења',
                 prefixIcon: Icon(Icons.search),
+                border: OutlineInputBorder(),
               ),
-              onSubmitted: _onSearch,
+              onChanged: _onSearch,
             ),
           ),
+
           Expanded(
             child: _loading
                 ? const Center(child: CircularProgressIndicator())
@@ -86,13 +86,15 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
                     itemCount: _filtered.length,
                     itemBuilder: (context, index) {
                       final meal = _filtered[index];
+
                       return MealCard(
                         meal: meal,
                         onTap: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => MealDetailScreen(mealId: meal.idMeal),
+                              builder: (_) =>
+                                  MealDetailScreen(mealId: meal.idMeal),
                             ),
                           );
                         },
