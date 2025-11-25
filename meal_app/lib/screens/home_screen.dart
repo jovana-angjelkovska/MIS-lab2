@@ -34,7 +34,6 @@ class _HomeScreenState extends State<HomeScreen> {
         _filtered = cats;
       });
     } catch (e) {
-      // handle error
     } finally {
       setState(() => _loading = false);
     }
@@ -60,7 +59,6 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       );
     } catch (e) {
-      // handle
     }
   }
 
@@ -68,7 +66,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Категории на јадења'),
+        title: const Text('Meal Categories / Категории на јадења'),
         actions: [
           IconButton(
             tooltip: 'Random meal',
@@ -84,7 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: TextField(
               controller: _searchController,
               decoration: const InputDecoration(
-                labelText: 'Пребарување категории',
+                labelText: 'Search categories / Пребарување категории',
                 prefixIcon: Icon(Icons.search),
               ),
               onChanged: (_) => _onSearchChanged(),
