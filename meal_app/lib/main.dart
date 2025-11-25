@@ -12,7 +12,7 @@ class MealApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'MealDB Recipes',
+      title: 'Meal App / Апликација за рецепти',
       theme: ThemeData(
         primarySwatch: Colors.deepOrange,
       ),
