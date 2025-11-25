@@ -3,6 +3,7 @@ import '../models/meal.dart';
 import '../services/api_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+
 class MealDetailScreen extends StatefulWidget {
   final String mealId;
   const MealDetailScreen({super.key, required this.mealId});
@@ -27,7 +28,6 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
       final meal = await ApiService.lookupMeal(widget.mealId);
       setState(() => _meal = meal);
     } catch (e) {
-      // handle
     } finally {
       setState(() => _loading = false);
     }
@@ -47,7 +47,7 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : _meal == null
-              ? const Center(child: Text('Рецептот не е достапен'))
+              ? const Center(child: Text('The recipe is not valid'))
               : SingleChildScrollView(
                   padding: const EdgeInsets.all(16),
                   child: Column(
@@ -61,14 +61,14 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
                       const SizedBox(height: 12),
                       Text(_meal!.strMeal, style: Theme.of(context).textTheme.headlineSmall),
                       const SizedBox(height: 8),
-                      if (_meal!.strArea != null) Text('Кујна: ${_meal!.strArea}'),
-                      if (_meal!.strCategory != null) Text('Категорија: ${_meal!.strCategory}'),
+                      if (_meal!.strArea != null) Text('Cuisine / Кујна: ${_meal!.strArea}'),
+                      if (_meal!.strCategory != null) Text('Category / Категорија: ${_meal!.strCategory}'),
                       const SizedBox(height: 12),
-                      Text('Состојки:', style: Theme.of(context).textTheme.titleMedium),
+                      Text('Ingredients / Состојки:', style: Theme.of(context).textTheme.titleMedium),
                       const SizedBox(height: 8),
                       ..._meal!.ingredients.map((m) => Text('- ${m['ingredient']}: ${m['measure']}')),
                       const SizedBox(height: 12),
-                      Text('Инструкции:', style: Theme.of(context).textTheme.titleMedium),
+                      Text('Instructions / Инструкции:', style: Theme.of(context).textTheme.titleMedium),
                       const SizedBox(height: 8),
                       Text(_meal!.strInstructions ?? ''),
                       const SizedBox(height: 12),
@@ -76,7 +76,7 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
                         ElevatedButton.icon(
                           onPressed: () => _openYoutube(_meal!.strYoutube!),
                           icon: const Icon(Icons.video_library),
-                          label: const Text('Погледни на YouTube'),
+                          label: const Text('Watch on YouTube / Гледај го видеото на YouTube'),
                         ),
                     ],
                   ),
