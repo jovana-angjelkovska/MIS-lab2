@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:meal_app/screens/meal_detail_screen.dart';
+
 import '../services/api_service.dart';
 import '../models/category.dart';
 import '../widgets/category_card.dart';
-import 'category_meals_screen.dart';
 import '../models/meal.dart';
-import 'package:meal_app/screens/meal_detail_screen.dart';
+import '../screens/favorites_screen.dart';
+import 'category_meals_screen.dart';
+import '../services/notification_service.dart';  // NEW
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -23,6 +26,16 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _load();
+
+    // Schedule daily notification at 12:00 (noon)
+    final now = DateTime.now();
+    final scheduled = DateTime(now.year, now.month, now.day, 12, 00);
+    NotificationService().scheduleNotification(
+      1,
+      'Recipe of the day',
+      'Open the app to see a random recipe!',
+      scheduled,
+    );
   }
 
   Future<void> _load() async {
@@ -73,6 +86,15 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: const Icon(Icons.shuffle),
             onPressed: _showRandom,
           ),
+          IconButton(
+            icon: const Icon(Icons.favorite),
+            onPressed: () {
+            Navigator.of(context).pushNamed(
+            FavoritesScreen.routeName,
+            arguments: [], 
+              );
+            },
+          ),
         ],
       ),
       body: Column(
@@ -93,7 +115,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 ? const Center(child: CircularProgressIndicator())
                 : GridView.builder(
                     padding: const EdgeInsets.all(8),
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
                       childAspectRatio: 0.8,
                       crossAxisSpacing: 8,
@@ -108,7 +131,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => CategoryMealsScreen(category: cat.strCategory),
+                              builder: (_) => CategoryMealsScreen(
+                                category: cat.strCategory,
+                              ),
                             ),
                           );
                         },
